@@ -1,0 +1,75 @@
+@host = http://localhost:8080
+###
+# 1) Utwórz drużynę i zapisz jej ID do zmiennej globalnej `teamId`
+POST {{host}}/api/teams
+Content-Type: application/json
+
+{
+  "name": "IG",
+  "region": "CN",
+  "foundedYear": 2013
+}
+
+> {% client.global.set("teamId", response.body.id); %}
+
+###
+# 2) Sprawdź, że teamId zostało ustawione i odczytaj drużynę
+GET {{host}}/api/teams/{{teamId}}
+
+###
+# 3) Zaktualizuj drużynę (używa {{teamId}})
+PUT {{host}}/api/teams/{{teamId}}
+Content-Type: application/json
+
+{
+  "region": "KR",
+  "foundedYear": 2015
+}
+
+###
+# 4) Wypisz wszystkie drużyny
+GET {{host}}/api/teams
+
+###
+# 5) Dodaj gracza do drużyny i zapisz jego ID do zmiennej `playerId`
+POST {{host}}/api/teams/{{teamId}}/players
+Content-Type: application/json
+
+{
+  "nickname": "Gala",
+  "role": "ADC",
+  "age": 23,
+  "salary": 230000
+}
+
+> {% client.global.set("playerId", response.body.id); %}
+
+###
+# 6) Odczytaj gracza (używa {{playerId}})
+GET {{host}}/api/players/{{playerId}}
+
+###
+# 7) Wypisz graczy danej drużyny (używa {{teamId}}) — działa tylko po kroku 1
+GET {{host}}/api/teams/{{teamId}}/players
+
+###
+# 8) Wypisz wszystkich graczy
+GET {{host}}/api/players
+
+###
+# 9) Zaktualizuj gracza (używa {{playerId}})
+PUT {{host}}/api/players/{{playerId}}
+Content-Type: application/json
+
+{
+  "role": "JGL",
+  "age": 32
+}
+
+###
+# 10) Usuń gracza
+DELETE {{host}}/api/players/{{playerId}}
+
+###
+# 11) Usuń drużynę (orphanRemoval usunie też powiązanych graczy)
+DELETE {{host}}/api/teams/{{teamId}}
